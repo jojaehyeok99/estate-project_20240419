@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.nimbusds.jose.util.StandardCharset;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -62,6 +61,6 @@ public class JwtProvider {
     }
 
     return userId;
-    
+
   }
 }
