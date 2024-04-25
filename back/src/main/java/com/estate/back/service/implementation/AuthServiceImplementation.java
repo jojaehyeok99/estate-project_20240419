@@ -15,6 +15,7 @@ import com.estate.back.dto.response.ResponseDto;
 import com.estate.back.dto.response.auth.SignInResponseDto;
 import com.estate.back.entity.EmailAuthNumberEntity;
 import com.estate.back.entity.UserEntity;
+import com.estate.back.provider.JwtProvider;
 import com.estate.back.provider.MailProvider;
 import com.estate.back.repository.EmailAuthNumberRepository;
 import com.estate.back.repository.UserRepository;
@@ -30,7 +31,9 @@ public class AuthServiceImplementation implements AuthService{
 
   private final UserRepository userRepository;
   private final EmailAuthNumberRepository emailAuthNumberRepository;
+
   private final MailProvider mailProvider;
+  private final JwtProvider jwtProvider;
 
   private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -141,6 +144,32 @@ public class AuthServiceImplementation implements AuthService{
   @Override
   public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
     
-    throw new UnsupportedOperationException("Unimplemented method 'signIn'");
+    String accessToken = null;
+
+    try {
+
+      String userId = dto.getUserId();
+      String userPassword = dto.getUserPassword();
+
+      UserEntity userEntity = userRepository.findByUserId(userId);
+      if (userEntity == null) return ResponseDto.signInFailed();
+
+      // 암호화된 password를 가져옴
+      String encodedPassword = userEntity.getUserPassword();
+      
+      // 평문의 비밀번호와 암호화된 비밀번호가 일치하는지 작업
+      boolean isMatched = passwordEncoder.matches(userPassword, encodedPassword);
+      if (!isMatched) return ResponseDto.signInFailed();
+
+      // JWT 토큰 생성
+      accessToken = jwtProvider.create(userId);
+      if (accessToken == null) return ResponseDto.tokenCreationFailed();
+
+    } catch (Exception exception){
+      exception.printStackTrace();
+      return ResponseDto.databaseError();
+    }
+
+    return SignInResponseDto.success(accessToken);
   }
 }
