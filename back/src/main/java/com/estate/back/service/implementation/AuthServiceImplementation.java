@@ -3,6 +3,7 @@ package com.estate.back.service.implementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.estate.back.common.util.EmailAuthNumberUtil;
 import com.estate.back.dto.request.auth.EmailAuthCheckRequestDto;
 import com.estate.back.dto.request.auth.EmailAuthRequestDto;
 import com.estate.back.dto.request.auth.IdCheckRequestDto;
@@ -10,9 +11,13 @@ import com.estate.back.dto.request.auth.SignInRequestDto;
 import com.estate.back.dto.request.auth.SignUpRequestDto;
 import com.estate.back.dto.response.ResponseDto;
 import com.estate.back.dto.response.auth.SignInResponseDto;
+import com.estate.back.entity.EmailAuthNumberEntity;
+import com.estate.back.provider.MailProvider;
+import com.estate.back.repository.EmailAuthNumberRepository;
 import com.estate.back.repository.UserRepository;
 import com.estate.back.service.AuthService;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 
 // Auth 모듈의 비즈니스 로직 구현체
@@ -21,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImplementation implements AuthService{
 
   private final UserRepository userRepository;
+  private final EmailAuthNumberRepository emailAuthNumberRepository;
+  private final MailProvider mailProvider;
 
   @Override
   public ResponseEntity<ResponseDto> idCheck(IdCheckRequestDto dto) {
@@ -43,27 +50,44 @@ public class AuthServiceImplementation implements AuthService{
   }
 
   @Override
-  public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
-    
-    throw new UnsupportedOperationException("Unimplemented method 'signIn'");
-  }
+    public ResponseEntity<ResponseDto> emailAuth(EmailAuthRequestDto dto) {
+        
+        try {
 
-  @Override
-  public ResponseEntity<ResponseDto> emailAuth(EmailAuthRequestDto dto) {
-    
-    try {
-      String userEmail = dto.getUserEmail();
-      boolean existedEmail = userRepository.existsByUserEmail(userEmail);
-      if (existedEmail) return ResponseDto.duplicatedEmail();
+            String userEmail = dto.getUserEmail();
+
+            boolean existedEmail = userRepository.existsByUserEmail(userEmail);
+            if (existedEmail) return ResponseDto.duplicatedEmail();
+
+            String authNumber = EmailAuthNumberUtil.createNumber();
+
+            EmailAuthNumberEntity emailAuthNumberEntity = new EmailAuthNumberEntity(userEmail, authNumber);
+
+            emailAuthNumberRepository.save(emailAuthNumberEntity);
+
+            mailProvider.mailAuthSend(null, null);
+
+        } catch (MessagingException messagingException) {
+            messagingException.printStackTrace();
+            return ResponseDto.mailSendFailed();
 
 
-      
-    } catch (Exception exception){
-        exception.printStackTrace();
-        return ResponseDto.databaseError();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        try {
+            mailProvider.mailAuthSend(null, null);
+            
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.mailSendFailed();
+        }
+
+        return ResponseDto.success();
+        
     }
-    return ResponseDto.success();
-  }
 
   @Override
   public ResponseEntity<ResponseDto> emailAuthCheck(EmailAuthCheckRequestDto dto) {
@@ -75,5 +99,11 @@ public class AuthServiceImplementation implements AuthService{
   public ResponseEntity<ResponseDto> signUp(SignUpRequestDto dto) {
     
     throw new UnsupportedOperationException("Unimplemented method 'signUp'");
+  }
+
+  @Override
+  public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'signIn'");
   }
 }
