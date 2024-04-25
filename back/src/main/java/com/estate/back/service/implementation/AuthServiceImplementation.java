@@ -65,7 +65,7 @@ public class AuthServiceImplementation implements AuthService{
 
             emailAuthNumberRepository.save(emailAuthNumberEntity);
 
-            mailProvider.mailAuthSend(null, null);
+            mailProvider.mailAuthSend(userEmail, authNumber);
 
         } catch (MessagingException messagingException) {
             messagingException.printStackTrace();
@@ -75,14 +75,6 @@ public class AuthServiceImplementation implements AuthService{
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
-        }
-        try {
-            mailProvider.mailAuthSend(null, null);
-            
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.mailSendFailed();
         }
 
         return ResponseDto.success();
