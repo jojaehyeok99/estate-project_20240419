@@ -1,5 +1,5 @@
 // description : Navigation URL PATH
-export const AUTH_PATH = './authentication';
+export const AUTH_PATH = '/authentication';
 export const SERVICE_PATH = '/service';
 export const LOCAL_PATH = 'local';
 export const RATIO_PATH = 'ratio';
