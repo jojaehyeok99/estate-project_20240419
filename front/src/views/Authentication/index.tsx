@@ -3,6 +3,9 @@ import './style.css';
 import SignInBackground from 'src/assets/image/sign-in-background.png';
 import SignUpBackground from 'src/assets/image/sign-up-background.png';
 import InputBox from 'src/components/Inputbox';
+import { EmailAuthRequestDto, IdCheckRequestDto } from 'src/apis/auth/dto/request';
+import { EmailAuthRequest, IdCheckRequest } from 'src/apis/auth';
+import ResponseDto from 'src/apis/response.dto';
 
 //                    type                    //
 type AuthPage = 'sign-in'|'sign-up'; // 타입을 지정
@@ -124,10 +127,41 @@ function SignUp ({onLinkClickHandler} : Props) {
   // 모든 인증이 완료되면 회원가입 표시
   const isSignUpActive = isIdCheck && isEmailCheck && isAuthNumberCheck && isPasswordPattern && isEqualPassword;
 
-  // primary-button full-width / disable-button full-width
   const signUpButtonClass = isSignUpActive ? 'primary-button full-width' : 'disable-button full-width'
-  // const signUpButtonClass = (isSignUpActive ? 'primary' : 'disable') + '-button full-width'
-  // const signUpButtonClass = `${isSignUpActive ? 'primary' : 'disable'}-button full-width`
+
+  //                    function                    //
+  const idCheckResponse = (result : ResponseDto | null) => {
+
+    const idMessage = !result ? '서버에 문제가 있습니다.':
+      result.code === 'VF' ? '아이디는 빈값 혹은 공백으로만 이루어질 수 없습니다.' :
+      result.code === 'DI' ? '이미 사용중인 아이디입니다.' :
+      result.code === 'DBE' ? '서버에 문제가 있습니다.' :
+      result.code === 'SU' ? '사용 가능한 아이디입니다.' : '';
+
+    const idError = !(result && result.code === 'SU');
+    const idCheck = !idError;
+
+    setIdMessage(idMessage);
+    setIdError(idError);
+    setIdCheck(idCheck);
+  };
+
+  const emailAuthResponse = (result : ResponseDto | null) => {
+
+    const emailMessage = !result ? '서버에 문제가 있습니다':
+      result.code === 'VF' ? '이메일 형식이 아닙니다.' :
+      result.code === 'DE' ? '중복된 이메일입니다.' :
+      result.code === 'MF' ? '인증번호 전송에 실패했습니다.' :
+      result.code === 'DBE' ? '서버에 문제가 있습니다.' :
+      result.code === 'SU' ? '인증번호가 전송되었습니다.' : '';
+    
+    const emailCheck = result !== null && (result.code === 'SU');
+    const emailError = !emailCheck;
+      
+    setEmailMessage(emailMessage);
+    setEmailCheck(emailCheck);
+    setEmailError(emailError);
+  };
 
   //                    event handler                    //
   const onIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -182,13 +216,10 @@ function SignUp ({onLinkClickHandler} : Props) {
 
   const onIdButtonClickHandler = () => {
     if(!idButtonStatus) return;
+    if (!id || !id.trim()) return;
 
-    const idCheck = id !== 'admin';
-    setIdCheck(idCheck);
-    setIdError(!idCheck);
-
-    const idMessage = idCheck ? '사용 가능한 아이디입니다.' : '이미 사용중인 아이디입니다.';
-    setIdMessage(idMessage);
+    const requestBody : IdCheckRequestDto = { userId : id};
+    IdCheckRequest(requestBody).then(idCheckResponse);
   };
 
   const onEmailButtonClickHandler = () => {
@@ -196,11 +227,14 @@ function SignUp ({onLinkClickHandler} : Props) {
 
     const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
     const isEmailPattern = emailPattern.test(email);
-    setEmailCheck(isEmailPattern);
-    setEmailError(!isEmailPattern);
-
-    const emailMessage = isEmailPattern ? '인증번호가 전송되었습니다.' : '이메일 형식이 아닙니다.';
-    setEmailMessage(emailMessage);
+    if(!isEmailPattern){
+    setEmailCheck(false);
+    setEmailError(true);
+    setEmailMessage('이메일 형식이 아닙니다.');
+    return;
+    }
+    const requestBody : EmailAuthRequestDto = {userEmail : email};
+    EmailAuthRequest(requestBody).then(emailAuthResponse);
   };
 
   const onAuthNumberButtonClickHandler = () => {
@@ -254,7 +288,7 @@ function SignUp ({onLinkClickHandler} : Props) {
 export default function Authentication() {
 
   //                    state                    //
-  const [page, setPage] = useState<AuthPage>('sign-in');
+  const [page, setPage] = useState<AuthPage>('sign-up');
 
   //                    event handler                    //
   const onLinkClickHandler = () => {
