@@ -1,5 +1,6 @@
 // description : Navigation URL PATH
 export const AUTH_PATH = '/authentication';
+export const SNS_PATH = '/sns/:accessToken/:expires';
 export const SERVICE_PATH = '/service';
 export const LOCAL_PATH = 'local';
 export const RATIO_PATH = 'ratio';
