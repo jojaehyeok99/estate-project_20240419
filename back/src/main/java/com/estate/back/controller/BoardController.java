@@ -22,11 +22,10 @@ public class BoardController {
   private final BoardService boardService;
 
   @PostMapping("/")
-  public ResponseEntity<ResponseDto> postBoard (
+  ResponseEntity<ResponseDto> postBoard (
     @RequestBody @Valid PostBoardRequestDto requestBody, @AuthenticationPrincipal String userId){
     
       ResponseEntity<ResponseDto> response = boardService.postBoard(requestBody, userId);
       return response;
   }
-  
 }
