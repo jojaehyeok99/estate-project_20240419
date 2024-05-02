@@ -32,7 +32,7 @@ public class BoardEntity {
   private String title;
   private String contents;
   private String writerId;
-  private String writerDatetime;
+  private String writeDatetime;
   private Integer viewCount;
   private String comment;
 
@@ -45,7 +45,7 @@ public class BoardEntity {
     this.title = dto.getTitle();
     this.contents = dto.getContents();
     this.writerId = userId;
-    this.writerDatetime = writeDatetime;
+    this.writeDatetime = writeDatetime;
     this.viewCount = 0;
   }
 }
