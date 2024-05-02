@@ -167,3 +167,16 @@ client가 header에 bearer 토큰을 포함하여 요청
 2-1. 만약 데이트베이스 작업 중 에러가 발생하면 'DBE' 응답 처리
 
 3. 'SU' 응답 처리
+-------------------------------------------------------------------------------------------------------------
+게시판 전체 리스트 조회 프로세스
+
+데이터베이스에서 전체 리스트 조회 
+-> List<BoardEntity> : 반복해서 값들을 꺼내와  List<BoardListItem>에 입력
+-> List<BoardListItem>
+
+- 비즈니스 로직 구현
+SELECT * 
+FROM board
+ORDER BY reception_number DESC;
+
+findByOrderByReceptionNumberDesc();
