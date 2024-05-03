@@ -12,4 +12,8 @@ import com.estate.back.entity.BoardEntity;
 public interface BoardRepository extends JpaRepository<BoardEntity, Integer>{
   
   List<BoardEntity> findByOrderByReceptionNumberDesc();
+  // Contains / Containing / IsContaining => Like '%word%'
+  // StartingWith => Like 'word%'
+  // EndingWith => Like '%word'
+  List<BoardEntity> findByTitleContainsOrderByReceptionNumberDesc(String title);
 }
