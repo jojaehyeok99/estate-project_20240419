@@ -15,8 +15,8 @@ export const LOCAL_ABSOLUTE_PATH = `${SERVICE_PATH}/${LOCAL_PATH}`;
 export const RATIO_ABSOLUTE_PATH = `${SERVICE_PATH}/${RATIO_PATH}`;
 export const QNA_LIST_ABSOLUTE_PATH = `${SERVICE_PATH}/${QNA_PATH}`;
 export const QNA_WRITE_ABSOLUTE_PATH = `${SERVICE_PATH}/${QNA_PATH}/${QNA_WRITE_PATH}`;
-export const QNA_DETAIL_ABSOLUTE_PATH = (receptionNumber: string) => `${SERVICE_PATH}/${QNA_PATH}/${receptionNumber}`;
-export const QNA_UPDATE_ABSOLUTE_PATH = (receptionNumber: string) => `${SERVICE_PATH}/${QNA_PATH}/update/${receptionNumber}`;
+export const QNA_DEATIL_ABSOLUTE_PATH = (receptionNumber: number) => `${SERVICE_PATH}/${QNA_PATH}/${receptionNumber}`;
+export const QNA_UPDATE_ABSOLUTE_PATH = (receptionNumber: string | number) => `${SERVICE_PATH}/${QNA_PATH}/update/${receptionNumber}`;
 
 // description : API URL PATH
 export const SERVER_DOMAIN_URL = 'http://localhost:4000';
@@ -34,3 +34,9 @@ export const GET_SIGN_IN_USER_REQUEST_URL = `${SERVER_USER_MODULE_URL}/`;
 
 export const SERVER_BOARD_MODULE_URL = `${SERVER_API_URL}/board`;
 export const POST_BOARD_REQUEST_URL = `${SERVER_BOARD_MODULE_URL}/`;
+export const GET_BOARD_LIST_URL = `${SERVER_BOARD_MODULE_URL}/list`;
+export const GET_SEARCH_BOARD_LIST_URL = (searchWord: string) => `${SERVER_BOARD_MODULE_URL}/list/${searchWord}`;
+
+// description: 게시물 상수 
+export const COUNT_PER_PAGE = 1;
+export const COUNT_PER_SECTION = 2;
