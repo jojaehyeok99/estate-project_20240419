@@ -10,6 +10,7 @@ public interface ResponseMessage {
   String VALIDATION_FAILED = "Validation Failed.";
   String DUPLICATED_ID = "Duplicated Id.";
   String DUPLICATED_EMAIL = "Duplicated Email.";
+  String NO_EXIST_BOARD = "No Exist Board.";
 
   // 401
   String SIGN_IN_FAILED = "Sign in failed.";

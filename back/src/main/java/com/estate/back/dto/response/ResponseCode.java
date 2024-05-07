@@ -10,6 +10,7 @@ public interface ResponseCode {
   String VALIDATION_FAILED = "VF";
   String DUPLICATED_ID = "DI";
   String DUPLICATED_EMAIL = "DE";
+  String NO_EXIST_BOARD = "NB";
 
   // 401
   String SIGN_IN_FAILED = "SF";
