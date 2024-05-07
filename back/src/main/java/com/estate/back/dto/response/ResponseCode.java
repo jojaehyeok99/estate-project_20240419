@@ -11,6 +11,7 @@ public interface ResponseCode {
   String DUPLICATED_ID = "DI";
   String DUPLICATED_EMAIL = "DE";
   String NO_EXIST_BOARD = "NB";
+  String WRITTEN_COMMENT = "WC";
 
   // 401
   String SIGN_IN_FAILED = "SF";
