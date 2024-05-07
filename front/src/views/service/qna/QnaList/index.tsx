@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import './style.css'
 import { useUserStore } from 'src/stores';
 import { useNavigate } from 'react-router';
-import { AUTH_ABSOLUTE_PATH, COUNT_PER_PAGE, COUNT_PER_SECTION, QNA_DEATIL_ABSOLUTE_PATH, QNA_WRITE_ABSOLUTE_PATH } from 'src/constant';
+import { AUTH_ABSOLUTE_PATH, COUNT_PER_PAGE, COUNT_PER_SECTION, QNA_DETAIL_ABSOLUTE_PATH, QNA_WRITE_ABSOLUTE_PATH } from 'src/constant';
 import { BoardListItem } from 'src/types';
 import { getBoardListRequest, getSearchBoardListRequest } from 'src/apis/board';
 import { useCookies } from 'react-cookie';
@@ -23,7 +23,7 @@ function ListItem ({
     const navigator = useNavigate();
 
     //                    event handler                    //
-    const onClickHandler = () => navigator(QNA_DEATIL_ABSOLUTE_PATH(receptionNumber));
+    const onClickHandler = () => navigator(QNA_DETAIL_ABSOLUTE_PATH(receptionNumber));
 
     //                    render                    //
     return (
@@ -31,8 +31,8 @@ function ListItem ({
             <div className='qna-list-table-reception-number'>{receptionNumber}</div>
             <div className='qna-list-table-status'>
                 {status ? 
-                <div className='disable-bedge'>완료</div> :
-                <div className='primary-bedge'>접수</div>
+                <div className='disable-badge'>완료</div> :
+                <div className='primary-badge'>접수</div>
                 }
             </div>
             <div className='qna-list-table-title' style={{ textAlign: 'left' }}>{title}</div>
@@ -52,7 +52,7 @@ export default function QnaList() {
 
     const [boardList, setBoardList] = useState<BoardListItem[]>([]);
     const [viewList, setViewList] = useState<BoardListItem[]>([]);
-    const [totalLenght, setTotalLength] = useState<number>(0);
+    const [totalLength, setTotalLength] = useState<number>(0);
     const [totalPage, setTotalPage] = useState<number>(1);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageList, setPageList] = useState<number[]>([1]);
@@ -65,10 +65,10 @@ export default function QnaList() {
     //                    function                    //
     const navigator = useNavigate();
 
-    const changePage = (boardList: BoardListItem[], totalLenght: number) => {
+    const changePage = (boardList: BoardListItem[], totalLength: number) => {
         const startIndex = (currentPage - 1) * COUNT_PER_PAGE;
         let endIndex = currentPage * COUNT_PER_PAGE;
-        if (endIndex > totalLenght - 1) endIndex = totalLenght;
+        if (endIndex > totalLength - 1) endIndex = totalLength;
         const viewList = boardList.slice(startIndex, endIndex);
         setViewList(viewList);
     };
@@ -85,16 +85,16 @@ export default function QnaList() {
     const changeBoardList = (boardList: BoardListItem[]) => {
         setBoardList(boardList);
 
-        const totalLenght = boardList.length;
-        setTotalLength(totalLenght);
+        const totalLength = boardList.length;
+        setTotalLength(totalLength);
 
-        const totalPage = Math.floor((totalLenght - 1) / COUNT_PER_PAGE) + 1;
+        const totalPage = Math.floor((totalLength - 1) / COUNT_PER_PAGE) + 1;
         setTotalPage(totalPage);
 
         const totalSection = Math.floor((totalPage - 1) / COUNT_PER_SECTION) + 1;
         setTotalSection(totalSection);
 
-        changePage(boardList, totalLenght);
+        changePage(boardList, totalLength);
 
         changeSection(totalPage);
     };
@@ -183,7 +183,7 @@ export default function QnaList() {
 
     useEffect(() => {
         if (!boardList.length) return;
-        changePage(boardList, totalLenght);
+        changePage(boardList, totalLength);
     }, [currentPage]);
 
     useEffect(() => {
@@ -197,7 +197,7 @@ export default function QnaList() {
     return (
         <div id='qna-list-wrapper'>
           <div className='qna-list-top'>
-            <div className='qna-list-size-text'>전체 <span className='emphasis'>{totalLenght}건</span> | 페이지 <span className='emphasis'>{currentPage}/{totalPage}</span></div>
+            <div className='qna-list-size-text'>전체 <span className='emphasis'>{totalLength}건</span> | 페이지 <span className='emphasis'>{currentPage}/{totalPage}</span></div>
             <div className='qna-list-top-right'>
                 {loginUserRole === 'ROLE_USER' ? 
                 <div className='primary-button' onClick={onWriteButtonClickHandler}>글쓰기</div> :
