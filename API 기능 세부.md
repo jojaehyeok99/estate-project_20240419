@@ -167,6 +167,7 @@ client가 header에 bearer 토큰을 포함하여 요청
 2-1. 만약 데이트베이스 작업 중 에러가 발생하면 'DBE' 응답 처리
 
 3. 'SU' 응답 처리
+
 -------------------------------------------------------------------------------------------------------------
 게시판 전체 리스트 조회 프로세스
 
@@ -180,3 +181,16 @@ FROM board
 ORDER BY reception_number DESC;
 
 findByOrderByReceptionNumberDesc();
+
+-------------------------------------------------------------------------------------------------------------
+게시물 조회 프로세스
+
+0. request body의 데이터가 유효한 데이터인지 확인
+0-1. 만약 유효하지 않은 데이터이면 "VF" 응답 처리
+
+(receptionNumber)
+
+1. 데이터베이스의 board 테이블에서 receptionNumber에 해당하는 레코드 조회
+SELECT *
+FROM board
+WHERE reception_number = :receptionNumber;
