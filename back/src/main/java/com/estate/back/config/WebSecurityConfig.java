@@ -95,7 +95,7 @@ class AuthorizationFailEntryPoint implements AuthenticationEntryPoint{
   public void commence(HttpServletRequest request, HttpServletResponse response,
       AuthenticationException authException) throws IOException, ServletException {
     
-    response.setContentType("application/json");
+    response.setContentType("application/json;charset=UTF-8");
     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     response.getWriter().write("{\"code\":\"AF\", \"message\":\"인증에 실패했습니다.\"}");
   }
