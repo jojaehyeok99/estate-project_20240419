@@ -12,7 +12,7 @@ export default function QnaUpdate() {
 
   //                    state                    //
   const contentsRef = useRef<HTMLTextAreaElement | null>(null);
-  const { loginUserId } = useUserStore();
+  const { loginUserId, loginUserRole } = useUserStore();
   const { receptionNumber } = useParams();
   const [cookies] = useCookies();
   const [writerId, setWriterId] = useState<string>('');
@@ -82,6 +82,10 @@ export default function QnaUpdate() {
     if (!receptionNumber || !cookies.accessToken) return;
     if (effectFlag) return;
     effectFlag = true;
+    if (loginUserRole !== 'ROLE_USER') {
+      navigator(QNA_LIST_ABSOLUTE_PATH);
+      return;
+    }
     getBoardRequest(receptionNumber, cookies.accessToken).then(getBoardResponse);
   },[]);
 
