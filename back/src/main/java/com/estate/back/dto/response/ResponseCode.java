@@ -16,7 +16,11 @@ public interface ResponseCode {
   // 401
   String SIGN_IN_FAILED = "SF";
   String AUTHENTICATION_FAILED = "AF";
+
+  // 403
   String AUTHORIZATION_FAILED = "AF";
+
+  String NOT_FOUND = "NF";
 
   // 500
   String TOKEN_CREATION_FAILED = "TF";

@@ -16,7 +16,11 @@ public interface ResponseMessage {
   // 401
   String SIGN_IN_FAILED = "Sign in failed.";
   String AUTHENTICATION_FAILED = "Authentication Failed.";
+
+  // 403
   String AUTHORIZATION_FAILED = "Authorization Failed.";
+
+  String NOT_FOUND = "Not Found.";
 
   // 500
   String TOKEN_CREATION_FAILED = "Token creation Failed.";
