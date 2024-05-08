@@ -13,8 +13,6 @@ import { PostCommentRequestDto } from 'src/apis/board/dto/request';
 export default function QnaDetail() {
 
   //                    state                    //
-  const commentRef = useRef<HTMLTextAreaElement | null>(null);
-
   const { loginUserId, loginUserRole} = useUserStore();
   const {receptionNumber} = useParams();
 
@@ -26,6 +24,7 @@ export default function QnaDetail() {
   const [viewCount, setViewCount] = useState<number>(0);
   const [contents, setContents] = useState<string>('');
   const [comment, setComment] = useState<string | null>(null);
+  const [commentRows, setCommentRows] = useState<number>(1);
 
   //                    function                    //
   const navigator = useNavigate();
@@ -104,9 +103,8 @@ export default function QnaDetail() {
     const comment = event.target.value;
     setComment(comment);
 
-    if (!commentRef.current) return;
-    commentRef.current.style.height ='auto';
-    commentRef.current.style.height = `${commentRef.current.scrollHeight}px`;
+    const commentRows = comment.split('\n').length;
+    setCommentRows(commentRows);
   };
 
   const onCommentSubmitClickHandler = () => {
@@ -143,7 +141,7 @@ export default function QnaDetail() {
       {loginUserRole === 'ROLE_ADMIN' && !status &&
       <div className='qna-detail-comment-write-box'>
         <div className='qna-detail-comment-textarea-box'>
-          <textarea ref={commentRef} className='qna-detail-comment-textarea' placeholder='답글을 작성해주세요.' value={comment == null ? '' : comment} onChange={onCommentChangeHandler}/>
+          <textarea style={{height : `${28 * commentRows}px`}} className='qna-detail-comment-textarea' placeholder='답글을 작성해주세요.' value={comment == null ? '' : comment} onChange={onCommentChangeHandler}/>
         </div>
         <div className='primary-button' onClick={onCommentSubmitClickHandler}>답글달기</div>
       </div>
